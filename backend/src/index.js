@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config(".env", { override: true });
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 const HOST = process.env.HOST || "localhost";
 
 // Middleware to parse JSON requests

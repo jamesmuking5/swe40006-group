@@ -41,7 +41,7 @@ const carSchema = new mongoose.Schema({
   price: Number,
 });
 // Create a Mongoose model for cars
-const Car = mongoose.model("Car", carSchema);
+export const Car = mongoose.model("Car", carSchema);
 
 const createDefaultCars = async () => { 
   try {

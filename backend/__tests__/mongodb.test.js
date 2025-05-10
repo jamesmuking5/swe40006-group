@@ -3,6 +3,12 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import { connectToMongoDB, Car } from "../src/database/mongodb";
+// Import jest for mocking (have to because I am using ESM import)
+import { jest } from "@jest/globals";
+
+// Suppress console output during tests
+console.log = jest.fn();
+console.error = jest.fn();
 
 // Global variable declaration
 let mongoServer;
@@ -11,14 +17,14 @@ let mongoServer;
 beforeAll(async () => {
   // Create the in-memory server
   mongoServer = await MongoMemoryServer.create();
-  
+
   // Get the connection URI from the in-memory server
   const mongoUri = mongoServer.getUri();
-  
+
   // Set environment variables for testing
   process.env.MONGODB_NAME = "test-database";
   process.env.MONGODB_URI = mongoUri;
-  
+
   // Connect to the in-memory database
   await mongoose.connect(mongoUri);
 });
@@ -60,12 +66,17 @@ describe("MongoDB Connection", () => {
 
   test("the initializing connectToMongoDB function should not create default cars if the database is not empty", async () => {
     // Create a car manually
-    const car = new Car({ make: "Toyota", model: "Corolla", year: 2020, price: 20000 });
+    const car = new Car({
+      make: "Toyota",
+      model: "Corolla",
+      year: 2020,
+      price: 20000,
+    });
     await car.save();
-    
+
     // Run the initializing function which should not create default cars
     await connectToMongoDB();
-    
+
     // Check if the database is not empty
     const count = await Car.countDocuments();
     expect(count).toBe(1); // Check if no new cars are created

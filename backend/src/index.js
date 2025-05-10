@@ -1,3 +1,6 @@
+// File: backend/src/index.js
+// Description: This file is the entry point for the car shop application. It sets up the Express server, connects to MongoDB, and handles server shutdown gracefully.
+
 import express from "express";
 import dotenv from "dotenv";
 

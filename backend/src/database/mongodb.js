@@ -108,3 +108,22 @@ const createDefaultCars = async () => {
     console.error(`${serviceLocation}: Error creating default cars: ${error}`);
   }
 };
+
+// Function to read the car data from the database
+/**
+ * Reads car data from the database.
+ *
+ * @async
+ * @function readCarData
+ * @returns {Promise<Array>} A promise that resolves to an array of car data.
+ * @throws {Error} Throws an error if there is an issue reading car data from the database.
+ */
+export const readCarData = async () => { 
+  try {
+    const cars = await Car.find();
+    return cars;
+  } catch (error) {
+    console.error(`${serviceLocation}: Error reading car data: ${error}`);
+    throw error;
+  }
+}

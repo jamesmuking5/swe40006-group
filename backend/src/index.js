@@ -22,7 +22,16 @@ app.use(express.urlencoded({ extended: true }));
 // Middleware to serve static files from the 'public' directory
 app.use(express.static("public"));
 
-// Add parentheses to immediately invoke the async function
+/**
+ * Starts the server and listens on the specified host and port.
+ *
+ * @constant {Object} server - The server instance created by the application.
+ * @callback serverCallback
+ * @param {string} serviceLocation - The location or name of the service.
+ * @param {string} HOST - The hostname or IP address the server will bind to.
+ * @param {number} PORT - The port number the server will listen on.
+ * @returns {void} Logs the server's running status and URL to the console.
+ */
 (async () => {
   try {
     // Connect to MongoDB

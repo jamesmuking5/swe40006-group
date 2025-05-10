@@ -1,3 +1,6 @@
+// File: carinfo.js
+// Description: This file defines the routes for handling car information requests in the car shop application.
+
 import express from "express";
 const router = express.Router();
 import { readCarData } from "../database/mongodb.js";

@@ -6,7 +6,7 @@
     "dev": "nodemon node src/index.js",
     "start": "node src/index.js",
     "build": "echo \"Error: no build specified\" && exit 1",
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "keywords": [
     "swe40006",

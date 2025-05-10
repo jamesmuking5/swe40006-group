@@ -27,6 +27,12 @@ app.get("/", (req, res) => {
   res.send("Welcome to the Car Shop backend API");
 });
 
+// Import routes
+import carInfoRouter from "./routes/carinfo.js";
+
+// Use the carInfoRouter for the '/carinfo' route
+app.use("/carinfo", carInfoRouter);
+
 /**
  * Starts the server and listens on the specified host and port.
  *

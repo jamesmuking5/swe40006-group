@@ -22,6 +22,11 @@ app.use(express.urlencoded({ extended: true }));
 // Middleware to serve static files from the 'public' directory
 app.use(express.static("public"));
 
+// Simple response for the root route
+app.get("/", (req, res) => {
+  res.send("Welcome to the Car Shop backend API");
+});
+
 /**
  * Starts the server and listens on the specified host and port.
  *

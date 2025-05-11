@@ -1,7 +1,7 @@
 // File: backend/src/index.js
 // Description: This file is the entry point for the car shop application. It sets up the Express server, connects to MongoDB, and handles server shutdown gracefully.
 
-import express from "express";
+// Import necessary modules
 import dotenv from "dotenv";
 
 // Import environment variables from .env file and always refresh
@@ -11,27 +11,12 @@ const serviceLocation = "Main Service";
 // Import MongoDB connection function
 import { connectToMongoDB } from "./database/mongodb.js";
 
-const app = express();
+// Import Express App from express-app.js
+import expressApp from "./services/express-app.js";
+
+const app = expressApp();
 const PORT = process.env.PORT || 8000;
 const HOST = process.env.HOST || "localhost";
-
-// Middleware to parse JSON requests
-app.use(express.json());
-// Middleware to parse URL-encoded requests
-app.use(express.urlencoded({ extended: true }));
-// Middleware to serve static files from the 'public' directory
-app.use(express.static("public"));
-
-// Simple response for the root route
-app.get("/", (req, res) => {
-  res.send("Welcome to the Car Shop backend API");
-});
-
-// Import routes
-import carInfoRouter from "./routes/carinfo.js";
-
-// Use the carInfoRouter for the '/carinfo' route
-app.use("/carinfo", carInfoRouter);
 
 /**
  * Starts the server and listens on the specified host and port.

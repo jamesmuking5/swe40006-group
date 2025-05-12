@@ -1,7 +1,7 @@
 // File: backend/src/index.js
 // Description: This file is the entry point for the car shop application. It sets up the Express server, connects to MongoDB, and handles server shutdown gracefully.
 
-import express from "express";
+// Import necessary modules
 import dotenv from "dotenv";
 
 // Import environment variables from .env file and always refresh
@@ -11,18 +11,23 @@ const serviceLocation = "Main Service";
 // Import MongoDB connection function
 import { connectToMongoDB } from "./database/mongodb.js";
 
-const app = express();
+// Import Express App from express-app.js
+import expressApp from "./services/express-app.js";
+
+const app = expressApp();
 const PORT = process.env.PORT || 8000;
 const HOST = process.env.HOST || "localhost";
 
-// Middleware to parse JSON requests
-app.use(express.json());
-// Middleware to parse URL-encoded requests
-app.use(express.urlencoded({ extended: true }));
-// Middleware to serve static files from the 'public' directory
-app.use(express.static("public"));
-
-// Add parentheses to immediately invoke the async function
+/**
+ * Starts the server and listens on the specified host and port.
+ *
+ * @constant {Object} server - The server instance created by the application.
+ * @callback serverCallback
+ * @param {string} serviceLocation - The location or name of the service.
+ * @param {string} HOST - The hostname or IP address the server will bind to.
+ * @param {number} PORT - The port number the server will listen on.
+ * @returns {void} Logs the server's running status and URL to the console.
+ */
 (async () => {
   try {
     // Connect to MongoDB

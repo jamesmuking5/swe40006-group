@@ -32,7 +32,6 @@ const HOST = process.env.HOST || "localhost";
   try {
     // Connect to MongoDB
     await connectToMongoDB();
-    console.log(`${serviceLocation}: MongoDB connection established`);
 
     // Declare server variable
     let server = app.listen(PORT, HOST, () => {
@@ -61,5 +60,6 @@ const HOST = process.env.HOST || "localhost";
     });
   } catch (error) {
     console.error(`${serviceLocation}: Error starting server: ${error}`);
+    process.exit(1); // Exit the process with an error code
   }
 })();

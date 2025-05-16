@@ -31,19 +31,22 @@ export const connectToMongoDB = async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(FULL_MONGODB_URI);
     }
+    
     // Check if the connection is successful
     if (mongoose.connection.readyState === 1) {
       console.log(`${serviceLocation}: MongoDB connection established`);
+      
+      // Only create default cars if connection is successful
+      await createDefaultCars();
+      console.log(`${serviceLocation}: Connected to MongoDB at ${FULL_MONGODB_URI}`);
+      return true;
     } else {
       console.error(`${serviceLocation}: MongoDB connection failed`);
+      throw new Error("MongoDB connection failed");
     }
-    // Check if the database is empty and create default cars if needed
-    createDefaultCars();
-    console.log(
-      `${serviceLocation}: Connected to MongoDB at ${FULL_MONGODB_URI}`
-    );
   } catch (error) {
     console.error(`${serviceLocation}: Error connecting to MongoDB:, ${error}`);
+    throw error; // Re-throw the error so the caller knows there was a problem
   }
 };
 

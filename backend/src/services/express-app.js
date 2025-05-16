@@ -2,6 +2,7 @@
 // Description: This file sets up the Express application, including middleware and routes.
 
 import express from "express";
+import cors from "cors";
 
 // Import routes
 import carInfoRouter from "../routes/carinfo.js";
@@ -15,6 +16,14 @@ export default () => {
   app.use(express.urlencoded({ extended: true }));
   // Middleware to serve static files from the 'public' directory
   app.use(express.static("public"));
+  // Middleware to enable CORS (Cross-Origin Resource Sharing)
+  if (process.env.NODE_ENV === "development") {
+    app.use(cors({
+      origin: "http://localhost:3000", // Frontend URL in development
+      methods: ["GET", "POST", "PUT", "DELETE"],
+      allowedHeaders: ["Content-Type", "Authorization"]
+    }));
+  }
 
   // Simple response for the root route
   app.get("/", (req, res) => {

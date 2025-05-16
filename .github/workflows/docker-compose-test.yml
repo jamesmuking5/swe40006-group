@@ -1,0 +1,58 @@
+# .github/workflows/docker-compose-test.yml
+name: Docker Compose Test
+
+# Manual trigger (In GitHub Actions) with optional branch input (default: ci-setup)
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to checkout'
+        required: true
+        default: 'ci-setup'
+
+jobs:
+  docker-compose-test:
+    name: Test Docker Compose Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Build and test with docker-compose
+        run: |
+          # Display Docker and Docker Compose versions
+          docker --version
+          docker compose version
+          
+          # Start MongoDB
+          docker compose up -d mongodb
+          
+          # Build and start the app
+          docker compose build app
+          docker compose up -d app
+          
+          # Wait for services to be ready
+          echo "Waiting for services to start..."
+          sleep 15
+          
+          # Check container status
+          docker compose ps
+          
+          # Basic health check
+          echo "Testing API endpoint..."
+          curl -f http://localhost:8000/ || exit 1
+          
+          # Run security scan (non-blocking)
+          echo "Running security scan..."
+          docker compose run security-scan || echo "Security scan found issues, but continuing..."
+          
+          # Shutdown
+          docker compose down
+      
+      - name: Report success
+        run: echo "Docker Compose test completed successfully"

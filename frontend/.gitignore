@@ -2,6 +2,7 @@
 node_modules
 *.log
 .env
+.env.*.local
 
 # Output directory
 dist
@@ -37,3 +38,4 @@ stats.html
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+

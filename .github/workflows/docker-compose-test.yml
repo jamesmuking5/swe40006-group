@@ -1,14 +1,17 @@
 # .github/workflows/docker-compose-test.yml
-name: Docker Compose Test
+name: Docker Compose CI
 
 # Manual trigger (In GitHub Actions) with optional branch input (default: ci-setup)
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       branch:
         description: 'Branch to checkout'
         required: true
-        default: 'ci-setup'
+        default: 'main'
 
 jobs:
   docker-compose-test:

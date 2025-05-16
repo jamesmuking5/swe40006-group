@@ -21,6 +21,9 @@ export default () => {
     res.send("Welcome to the Car Shop backend API");
   });
 
+  // Serve static files from the 'public' directory
+  app.use(express.static("public"));
+
   // Use the carInfoRouter for the '/carinfo' route
   app.use("/carinfo", carInfoRouter);
 

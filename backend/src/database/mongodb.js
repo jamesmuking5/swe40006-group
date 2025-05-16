@@ -31,19 +31,22 @@ export const connectToMongoDB = async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(FULL_MONGODB_URI);
     }
+    
     // Check if the connection is successful
     if (mongoose.connection.readyState === 1) {
       console.log(`${serviceLocation}: MongoDB connection established`);
+      
+      // Only create default cars if connection is successful
+      await createDefaultCars();
+      console.log(`${serviceLocation}: Connected to MongoDB at ${FULL_MONGODB_URI}`);
+      return true;
     } else {
       console.error(`${serviceLocation}: MongoDB connection failed`);
+      throw new Error("MongoDB connection failed");
     }
-    // Check if the database is empty and create default cars if needed
-    createDefaultCars();
-    console.log(
-      `${serviceLocation}: Connected to MongoDB at ${FULL_MONGODB_URI}`
-    );
   } catch (error) {
     console.error(`${serviceLocation}: Error connecting to MongoDB:, ${error}`);
+    throw error; // Re-throw the error so the caller knows there was a problem
   }
 };
 
@@ -55,12 +58,14 @@ export const connectToMongoDB = async () => {
  * @property {string} model - The model of the car.
  * @property {number} year - The year the car was manufactured.
  * @property {number} price - The price of the car.
+ * @property {string} imageName - The name of the image file associated with the car.
  */
 const carSchema = new mongoose.Schema({
   make: String,
   model: String,
   year: Number,
   price: Number,
+  imageName: String,
 });
 // Create a Mongoose model for cars
 export const Car = mongoose.model("Car", carSchema);
@@ -83,19 +88,19 @@ const createDefaultCars = async () => {
     if (count === 0) {
       // Create default cars
       const defaultCars = [
-        { make: "Toyota", model: "Corolla", year: 2020, price: 20000 },
-        { make: "Honda", model: "Civic", year: 2021, price: 22000 },
-        { make: "Ford", model: "Mustang", year: 2019, price: 26000 },
-        { make: "Chevrolet", model: "Malibu", year: 2020, price: 21000 },
-        { make: "Nissan", model: "Altima", year: 2022, price: 23000 },
-        { make: "Hyundai", model: "Elantra", year: 2021, price: 19500 },
-        { make: "BMW", model: "3 Series", year: 2018, price: 27000 },
-        { make: "Mercedes-Benz", model: "C-Class", year: 2019, price: 29000 },
-        { make: "Kia", model: "Forte", year: 2020, price: 18000 },
-        { make: "Subaru", model: "Impreza", year: 2021, price: 20000 },
-        { make: "Volkswagen", model: "Jetta", year: 2022, price: 22500 },
-        { make: "Mazda", model: "Mazda3", year: 2020, price: 20500 },
-        { make: "Tesla", model: "Model 3", year: 2021, price: 35000 },
+        { make: "Toyota", model: "Corolla", year: 2020, price: 20000, imageName: "toyota-corolla-2020.webp" },
+        { make: "Honda", model: "Civic", year: 2021, price: 22000, imageName: "honda-civic-2021.webp" },
+        { make: "Ford", model: "Mustang", year: 2019, price: 26000, imageName: "ford-mustang-2019.webp" },
+        { make: "Chevrolet", model: "Malibu", year: 2020, price: 21000, imageName: "chevrolet-malibu-2020.webp" },
+        { make: "Nissan", model: "Altima", year: 2022, price: 23000, imageName: "nissan-altima-2022.webp" },
+        { make: "Hyundai", model: "Elantra", year: 2021, price: 19500, imageName: "hyundai-elantra-2021.webp" },
+        { make: "BMW", model: "3 Series", year: 2018, price: 27000, imageName: "bmw-3series-2018.webp" },
+        { make: "Mercedes-Benz", model: "C-Class", year: 2019, price: 29000, imageName: "mercedes-benz-c-class-2019.webp" },
+        { make: "Kia", model: "Forte", year: 2020, price: 18000, imageName: "kia-forte-2020.webp" },
+        { make: "Subaru", model: "Impreza", year: 2021, price: 20000, imageName: "subaru-impreza-2021.webp" },
+        { make: "Volkswagen", model: "Jetta", year: 2022, price: 22500, imageName: "volkswagen-jetta-2022.webp" },
+        { make: "Mazda", model: "Mazda3", year: 2020, price: 20500, imageName: "mazda-mazda3-2020.webp" },
+        { make: "Tesla", model: "Model 3", year: 2021, price: 35000, imageName: "tesla-model-3-2021.webp" },
       ];
       await Car.insertMany(defaultCars);
       console.log(`${serviceLocation}: Default cars created`);

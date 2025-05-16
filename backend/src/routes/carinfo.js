@@ -7,6 +7,7 @@ import { readCarData } from "../database/mongodb.js";
 
 // Return a json object with car information
 router.get("/getData", async (req, res) => {
+  console.log(`Received request for car information from ${req.ip}`);
   try {
     const carInfo = await readCarData();
     if (!carInfo) {

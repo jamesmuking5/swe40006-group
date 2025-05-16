@@ -1,0 +1,62 @@
+# Node modules
+node_modules
+*/node_modules
+**/node_modules
+
+# Development files
+.git
+.github
+**/.gitignore
+.vscode
+**/.vscode
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+**/.editorconfig
+**/.eslintrc*
+**/.prettierrc*
+.DS_Store
+**/.DS_Store
+.todo
+**/README.md
+
+# Test files
+**/tests/
+**/__tests__/
+backend/jest.config.*
+**/coverage/
+
+# Environment variables (except for production ones)
+.env
+**/.env.local
+**/.env.development*
+**/.env.test*
+# Keep production environment variables for build
+# But generally it's better to pass them at runtime
+# **/.env.production*
+
+# Build artifacts (they'll be recreated)
+**/build/
+**/dist/
+**/.cache/
+
+# Docker related files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Secrets and sensitive information
+**/.secret.*
+.secret.image.png
+
+# Backend specific
+backend/.todo
+backend/coverage/
+
+# Logs
+**/logs
+**/*.log
+
+# Temporary files
+**/tmp
+**/temp

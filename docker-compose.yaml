@@ -1,0 +1,35 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=car-shop-database-dev
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017
+      - MONGODB_NAME=car-shop-database-dev
+      - HOST=0.0.0.0
+      - PORT=8000
+    depends_on:
+      - mongodb
+
+  # CI - vulnerability scanning
+  security-scan:
+    image: aquasec/trivy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: image your-image-name:latest
+
+volumes:
+  mongodb_data:

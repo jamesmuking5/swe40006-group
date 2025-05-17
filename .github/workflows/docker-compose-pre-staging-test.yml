@@ -14,8 +14,8 @@ on:
         default: 'main'
 
 jobs:
-  docker-compose-test:
-    name: Test Docker Compose Setup
+  docker-compose-pre-staging-test:
+    name: Docker Compose Pre-Staging Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

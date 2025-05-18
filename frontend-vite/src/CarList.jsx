@@ -35,31 +35,48 @@ function CarList() {
   }, []);
 
   if (loading) {
-    return <p>Loading car data...</p>;
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading car data...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <p>Error fetching data: {error}</p>;
+    return (
+      <div className="error-container">
+        <p>Error fetching data: {error}</p>
+      </div>
+    );
   }
 
   return (
     <div className="car-list-container">
       <h2>Available Cars</h2>
       {cars.length === 0 ? (
-        <p>No cars available.</p>
+        <div className="empty-state">
+          <p>No cars available.</p>
+        </div>
       ) : (
         <ul className="car-list">
           {cars.map((car, index) => (
             <li key={car._id || index} className="car-item">
-              <img className="car-image"
-                src={`${API_BASE_URL}/images/${car.imageName}`}
-                alt={`${car.make} ${car.model}`}
-              />
-              <h3>
-                {car.make} {car.model}
-              </h3>
-              <p>Year: {car.year}</p>
-              <p>Price: ${car.price.toLocaleString()}</p>
+              <div className="car-image-container">
+                <img className="car-image"
+                  src={`${API_BASE_URL}/images/${car.imageName}`}
+                  alt={`${car.make} ${car.model}`}
+                />
+              </div>
+              <div className="car-details">
+                <h3>
+                  {car.make} {car.model}
+                </h3>
+                <div className="car-meta">
+                  <span className="car-year">{car.year}</span>
+                  <span className="car-price">${car.price.toLocaleString()}</span>
+                </div>
+              </div>
             </li>
           ))}
         </ul>

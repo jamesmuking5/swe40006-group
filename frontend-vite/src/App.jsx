@@ -10,6 +10,9 @@ function App() {
       <main>
         <CarList />
       </main>
+      <footer>
+        <p>&copy; {new Date().getFullYear()} Car Shop Demo - SWE40006 Group Project</p>
+      </footer>
     </div>
   )
 }

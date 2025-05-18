@@ -10,6 +10,8 @@ function CarList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { addToCart, cartItems } = useCart();
+  // Add state for image popup
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchCarData = async () => {
@@ -34,6 +36,16 @@ function CarList() {
   // Check if car is already in cart
   const isInCart = (carId) => {
     return cartItems.some(item => item._id === carId);
+  };
+  
+  // Function to show image popup
+  const handleImageClick = (car) => {
+    setSelectedImage(car);
+  };
+  
+  // Function to close image popup
+  const closeImagePopup = () => {
+    setSelectedImage(null);
   };
 
   if (loading) {
@@ -65,9 +77,11 @@ function CarList() {
           {cars.map((car, index) => (
             <li key={car._id || index} className="car-item">
               <div className="car-image-container">
-                <img className="car-image"
+                <img 
+                  className="car-image"
                   src={`${API_BASE_URL}/images/${car.imageName}`}
                   alt={`${car.make} ${car.model}`}
+                  onClick={() => handleImageClick(car)}
                 />
                 {car.price > 25000 && (
                   <span className="premium-badge">Premium</span>
@@ -90,6 +104,27 @@ function CarList() {
             </li>
           ))}
         </ul>
+      )}
+      
+      {/* Image Popup Modal */}
+      {selectedImage && (
+        <div className="image-modal-overlay" onClick={closeImagePopup}>
+          <div className="image-modal" onClick={e => e.stopPropagation()}>
+            <button className="image-modal-close" onClick={closeImagePopup}>×</button>
+            <h3>{selectedImage.make} {selectedImage.model}</h3>
+            <div className="full-image-container">
+              <img 
+                src={`${API_BASE_URL}/images/${selectedImage.imageName}`} 
+                alt={`${selectedImage.make} ${selectedImage.model}`} 
+                className="full-image"
+              />
+            </div>
+            <div className="image-modal-details">
+              <p>Year: {selectedImage.year}</p>
+              <p>Price: ${selectedImage.price.toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

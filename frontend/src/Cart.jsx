@@ -5,6 +5,8 @@ import './Cart.css';
 function Cart() {
   const { cartItems, removeFromCart, clearCart, cartTotal } = useCart();
   const [showModal, setShowModal] = useState(false);
+  // Add state for image popup
+  const [selectedImage, setSelectedImage] = useState(null);
   
   const handlePurchase = () => {
     if (cartItems.length > 0) {
@@ -15,6 +17,16 @@ function Cart() {
   const handleCloseModal = () => {
     setShowModal(false);
     clearCart();
+  };
+  
+  // Function to show image popup
+  const handleImageClick = (car) => {
+    setSelectedImage(car);
+  };
+  
+  // Function to close image popup
+  const closeImagePopup = () => {
+    setSelectedImage(null);
   };
   
   return (
@@ -31,6 +43,7 @@ function Cart() {
                   src={`${import.meta.env.VITE_API_BASE_URL}/images/${car.imageName}`} 
                   alt={`${car.make} ${car.model}`} 
                   className="cart-item-image" 
+                  onClick={() => handleImageClick(car)}
                 />
                 <div className="cart-item-details">
                   <h3>{car.make} {car.model}</h3>
@@ -65,10 +78,32 @@ function Cart() {
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="success-icon">✓</div>
             <h3>Purchase Complete!</h3>
-            <p>Thank you for your order.</p>
+            <p>Thank you for your order. Your cars will be delivered tomorrow.</p>
+            
             <button className="modal-close" onClick={handleCloseModal}>
               Continue Shopping
             </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Image Popup Modal */}
+      {selectedImage && (
+        <div className="image-modal-overlay" onClick={closeImagePopup}>
+          <div className="image-modal" onClick={e => e.stopPropagation()}>
+            <button className="image-modal-close" onClick={closeImagePopup}>×</button>
+            <h3>{selectedImage.make} {selectedImage.model}</h3>
+            <div className="full-image-container">
+              <img 
+                src={`${import.meta.env.VITE_API_BASE_URL}/images/${selectedImage.imageName}`} 
+                alt={`${selectedImage.make} ${selectedImage.model}`} 
+                className="full-image"
+              />
+            </div>
+            <div className="image-modal-details">
+              <p>Year: {selectedImage.year}</p>
+              <p>Price: ${selectedImage.price.toLocaleString()}</p>
+            </div>
           </div>
         </div>
       )}

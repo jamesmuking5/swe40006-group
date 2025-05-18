@@ -80,8 +80,11 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: staging
-      url: https://${{ secrets.AZURE_WEBAPP_NAME_STAGING }}.azurewebsites.net
+      url: ${{ steps.set_env_url.outputs.webapp_url }}
     steps:
+      - name: Set environment URL
+        id: set_env_url
+        run: echo "webapp_url=https://${{ secrets.AZURE_WEBAPP_NAME_STAGING }}.azurewebsites.net" >> $GITHUB_OUTPUT
       - name: Log in to Azure (OIDC)
         uses: azure/login@v1
         with:
@@ -110,8 +113,11 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://${{ secrets.AZURE_WEBAPP_NAME_PRODUCTION }}.azurewebsites.net
+      url: ${{ steps.set_env_url.outputs.webapp_url }}
     steps:
+      - name: Set environment URL
+        id: set_env_url
+        run: echo "webapp_url=https://${{ secrets.AZURE_WEBAPP_NAME_PRODUCTION }}.azurewebsites.net" >> $GITHUB_OUTPUT
       - name: Log in to Azure (OIDC)
         uses: azure/login@v1
         with:

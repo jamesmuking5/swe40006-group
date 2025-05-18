@@ -1,0 +1,134 @@
+name: Build and Deploy to ACR and Azure Web App with OIDC
+
+on:
+  push:
+    branches: [ "main" ] # For staging
+  release:
+    types: [published] # For production, when a GitHub Release is published (uses tags)
+  workflow_dispatch:
+
+env:
+  ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
+  ACR_IMAGE_NAME: ${{ secrets.ACR_IMAGE_NAME }}
+  AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+  # IMAGE_TAG will be set per job
+
+# Requests an OIDC token from GitHub
+permissions:
+  id-token: write # Required for OIDC to get an ID token
+  contents: read  # Required to checkout the code
+  packages: none # Previously needed for GitHub CR, but now using Azure CR
+
+jobs:
+  build-and-push-to-acr:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.image_meta.outputs.version }}
+    env:
+      IMAGE_TAG: ${{ github.sha }} # Default for pushes
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set image tag for releases
+        if: github.event_name == 'release'
+        run: echo "IMAGE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+
+      - name: Log in to Azure (OIDC)
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: false # Not needed for Docker operations
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.ACR_LOGIN_SERVER }}
+          # Uses the token from azure/login
+
+      - name: Docker meta for image tag
+        id: image_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.ACR_LOGIN_SERVER }}/${{ env.ACR_IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ env.IMAGE_TAG }}
+
+      - name: Build and push Docker image to ACR
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.image_meta.outputs.tags }}
+          labels: ${{ steps.image_meta.outputs.labels }}
+          file: ./Dockerfile
+
+      - name: Azure logout
+        if: always()
+        run: |
+          az logout --username ${{ secrets.AZURE_CLIENT_ID }} || true
+          az account clear || true
+
+
+  deploy-to-staging:
+    needs: build-and-push-to-acr
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://${{ secrets.AZURE_WEBAPP_NAME_STAGING }}.azurewebsites.net
+    steps:
+      - name: Log in to Azure (OIDC)
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Web App Staging
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME_STAGING }}
+          resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
+          images: '${{ env.ACR_LOGIN_SERVER }}/${{ env.ACR_IMAGE_NAME }}:${{ needs.build-and-push-to-acr.outputs.image_tag }}'
+          # The azure/login action provides the authentication
+
+      - name: Azure logout
+        if: always()
+        run: |
+          az logout --username ${{ secrets.AZURE_CLIENT_ID }} || true
+          az account clear || true
+
+  deploy-to-production:
+    needs: build-and-push-to-acr
+    # If tagged, push to prod
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://${{ secrets.AZURE_WEBAPP_NAME_PRODUCTION }}.azurewebsites.net
+    steps:
+      - name: Log in to Azure (OIDC)
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Web App Production
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME_PRODUCTION }}
+          resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
+          images: '${{ env.ACR_LOGIN_SERVER }}/${{ env.ACR_IMAGE_NAME }}:${{ needs.build-and-push-to-acr.outputs.image_tag }}'
+          # The azure/login action provides the authentication
+
+      - name: Azure logout
+        if: always()
+        run: |
+          az logout --username ${{ secrets.AZURE_CLIENT_ID }} || true
+          az account clear || true

@@ -20,6 +20,10 @@ RUN npm ci
 # Copy frontend source code
 COPY frontend/ ./
 
+# Create .env.production with the correct API URL for production
+# Since the backend will serve the frontend, use a relative URL
+RUN echo "VITE_API_BASE_URL=" > .env.production
+
 # Build the frontend application
 RUN npm run build
 
@@ -45,7 +49,7 @@ RUN npm install -g pm2
 COPY --from=backend-build /app/backend /app
 
 # Copy built frontend from the frontend-build stage
-COPY --from=frontend-build /app/frontend/build /app/public
+COPY --from=frontend-build /app/frontend/dist /app/public
 
 # Create a non-root user and switch to it
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup

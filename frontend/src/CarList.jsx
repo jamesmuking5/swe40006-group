@@ -1,27 +1,24 @@
 import { useState, useEffect } from "react";
+import { useCart } from "./CartContext";
 import "./CarList.css";
 
 // Construct the base URL for the API
-// Fallback to a sensible default if the env var isn't set
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 function CarList() {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addToCart, cartItems } = useCart();
 
   useEffect(() => {
     const fetchCarData = async () => {
       try {
-        // Use the API_BASE_URL
         const response = await fetch(`${API_BASE_URL}/carinfo/getData`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        //DEBUG
-        console.log("Fetched car data:", data);
-
         setCars(data);
       } catch (e) {
         setError(e.message);
@@ -33,6 +30,11 @@ function CarList() {
 
     fetchCarData();
   }, []);
+
+  // Check if car is already in cart
+  const isInCart = (carId) => {
+    return cartItems.some(item => item._id === carId);
+  };
 
   if (loading) {
     return (
@@ -67,15 +69,23 @@ function CarList() {
                   src={`${API_BASE_URL}/images/${car.imageName}`}
                   alt={`${car.make} ${car.model}`}
                 />
+                {car.price > 25000 && (
+                  <span className="premium-badge">Premium</span>
+                )}
               </div>
               <div className="car-details">
-                <h3>
-                  {car.make} {car.model}
-                </h3>
-                <div className="car-meta">
+                <h3>{car.make} {car.model}</h3>
+                <div className="car-specs">
                   <span className="car-year">{car.year}</span>
                   <span className="car-price">${car.price.toLocaleString()}</span>
                 </div>
+                <button 
+                  className={`add-to-cart-button ${isInCart(car._id) ? 'in-cart' : ''}`}
+                  onClick={() => addToCart(car)}
+                  disabled={isInCart(car._id)}
+                >
+                  {isInCart(car._id) ? '✓ Added to Cart' : 'Add to Cart'}
+                </button>
               </div>
             </li>
           ))}

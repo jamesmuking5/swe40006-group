@@ -31,6 +31,7 @@
 }
 
 .car-item {
+  border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
@@ -39,7 +40,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-}r
+}
 
 .car-item:hover {
   transform: translateY(-8px);
@@ -53,7 +54,7 @@
 }
 
 .car-image-container {
-  border-radius: 10px;
+  border-radius: 12px;
   position: relative;
   overflow: hidden;
   aspect-ratio: 16 / 9;
@@ -70,6 +71,19 @@
   transform: scale(1.05);
 }
 
+.premium-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 .car-details {
   padding: 1.25rem;
   flex-grow: 1;
@@ -77,14 +91,11 @@
   flex-direction: column;
 }
 
-.car-meta {
-  margin-top: auto;
+.car-specs {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-color);
+  margin-top: 0.5rem;
 }
 
 .car-price {
@@ -99,6 +110,29 @@
   border-radius: 20px;
   font-size: 0.9rem;
   color: var(--text-light);
+}
+
+.add-to-cart-button {
+  margin-top: auto;
+  padding: 0.8rem 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.add-to-cart-button:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.add-to-cart-button.in-cart {
+  background-color: #48c774;
+  cursor: default;
 }
 
 /* Loading state */

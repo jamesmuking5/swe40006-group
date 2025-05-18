@@ -52,6 +52,13 @@ main {
   width: 100%;
 }
 
+.content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  align-items: start;
+}
+
 footer {
   padding: 1.5rem;
   background-color: #f5f7fa;
@@ -59,9 +66,20 @@ footer {
   text-align: center;
   color: #555;
   font-size: 0.9rem;
+  margin-top: 3rem;
 }
 
 /* Responsive adjustments */
+@media (max-width: 1024px) {
+  .content-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  .cart-wrapper {
+    order: -1;
+  }
+}
+
 @media (max-width: 768px) {
   .App-header {
     padding: 1.5rem 1rem;

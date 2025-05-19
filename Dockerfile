@@ -20,10 +20,13 @@ RUN npm ci
 # Copy frontend source code
 COPY frontend/ ./
 
+# DEBUG if the environment variable APP_ENV is set
+RUN echo "Debug: Value of APP_ENV just before writing .env.production is [${APP_ENV}]"
+
 # Create .env.production with the correct API URL for production
 # Since the backend will serve the frontend, use a relative URL
-RUN echo "VITE_API_BASE_URL=" > .env.production
-RUN echo "VITE_APP_ENVIRONMENT=${APP_ENV}" >> .env.production
+RUN echo "VITE_API_BASE_URL=" >.env.production
+RUN echo "VITE_APP_ENVIRONMENT=${APP_ENV}" >>.env.production
 
 # DEBUG if deployment workflow's environment variable was passed here properly
 RUN echo "Debug: Contents of frontend/.env.production:" && cat .env.production

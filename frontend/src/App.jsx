@@ -4,7 +4,7 @@ import Cart from './Cart';
 import { CartProvider } from './CartContext';
 
 function App() {
-  const appEnv = import.meta.env.VITE_APP_ENVIRONMENT;
+  const appEnv = import.meta.env.VITE_APP_ENVIRONMENT || 'unknown';
 
   return (
     <CartProvider>

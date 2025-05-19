@@ -34,6 +34,16 @@ jobs:
         if: github.event_name == 'release'
         run: echo "IMAGE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
 
+      # Sets the build environment (so that website footer can identify if it's production or staging)  
+      - name: Set Build Environment
+        id: set_build_env
+        run: |
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "BUILD_ENV=production" >> $GITHUB_ENV
+          else
+            echo "BUILD_ENV=staging" >> $GITHUB_ENV
+          fi    
+
       - name: Log in to Azure (OIDC)
         uses: azure/login@v2
         with:
@@ -79,7 +89,7 @@ jobs:
           file: ./Dockerfile
           build-args: |
             APP_ENV=${{ env.BUILD_ENV }}
-            
+
       - name: Azure logout
         if: always()
         run: |

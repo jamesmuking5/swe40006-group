@@ -92,7 +92,7 @@ jobs:
           labels: ${{ steps.image_meta.outputs.labels }}
           file: ./Dockerfile
           build-args: |
-            APP_ENV=${{ env.BUILD_ENV }}
+            APP_ENV="${{ env.BUILD_ENV }}"
 
       - name: Azure logout
         if: always()

@@ -1,5 +1,3 @@
-# Try to globally scope APP_ENV
-ARG APP_ENV
 
 # Use Node.js Alpine as the base image
 FROM node:23-alpine AS base
@@ -15,6 +13,9 @@ RUN apk add --no-cache python3 make g++
 # First stage: Build frontend
 FROM base AS frontend-build
 WORKDIR /app/frontend
+
+# Try to globally scope APP_ENV
+ARG APP_ENV
 
 # Copy frontend package files and install dependencies
 COPY frontend/package*.json ./

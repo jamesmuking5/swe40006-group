@@ -6,13 +6,6 @@ import { CartProvider } from './CartContext';
 function App() {
   const appEnv = import.meta.env.VITE_APP_ENVIRONMENT;
 
-  let footerEnvText = '';
-  if (appEnv === 'production') {
-    footerEnvText = ' (Production)';
-  } else if (appEnv === 'staging') {
-    footerEnvText = ' (Staging)';
-  }
-
   return (
     <CartProvider>
       <div className="App">
@@ -30,7 +23,8 @@ function App() {
           </div>
         </main>
         <footer>
-          <p>&copy; {new Date().getFullYear()} Car Shop Demo - SWE40006 Group Project{footerEnvText}</p>
+          <p>&copy; {new Date().getFullYear()} Car Shop Demo - SWE40006 Group Project</p>
+          <p>This Web App is running on a <i>{appEnv}</i> server.</p>
         </footer>
       </div>
     </CartProvider>

@@ -25,6 +25,9 @@ COPY frontend/ ./
 RUN echo "VITE_API_BASE_URL=" > .env.production
 RUN echo "VITE_APP_ENVIRONMENT=${APP_ENV}" >> .env.production
 
+# DEBUG if deployment workflow's environment variable was passed here properly
+RUN echo "Debug: Contents of frontend/.env.production:" && cat .env.production
+
 # Build the frontend application
 RUN npm run build
 

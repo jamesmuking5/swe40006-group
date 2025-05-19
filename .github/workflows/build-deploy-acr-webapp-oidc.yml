@@ -9,10 +9,9 @@ on:
 
 env:
   ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
-  ACR_NAME: ${{ secrets.ACR_NAME }} # Ensure this secret is set in GitHub
+  ACR_NAME: ${{ secrets.ACR_NAME }} 
   ACR_IMAGE_NAME: ${{ secrets.ACR_IMAGE_NAME }}
   AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
-  # IMAGE_TAG will be set per job
 
 # Requests an OIDC token from GitHub
 permissions:
@@ -35,7 +34,7 @@ jobs:
         run: echo "IMAGE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
 
       # Sets the build environment (so that website footer can identify if it's production or staging)  
-      - name: Set Build Environment
+      - name: Set Build Environment Variable
         id: set_build_env
         run: |
           if [ "${{ github.event_name }}" == "release" ]; then
@@ -78,6 +77,10 @@ jobs:
           images: ${{ env.ACR_LOGIN_SERVER }}/${{ env.ACR_IMAGE_NAME }}
           tags: |
             type=raw,value=${{ env.IMAGE_TAG }}
+      
+      # Debug - check build environment before passing to Docker build
+      - name: Echo BUILD_ENV before Docker build
+        run: echo "BUILD_ENV is: ${{ env.BUILD_ENV }}
 
       - name: Build and push Docker image to ACR
         uses: docker/build-push-action@v5
@@ -95,7 +98,6 @@ jobs:
         run: |
           az logout --username ${{ secrets.AZURE_CLIENT_ID }} || true
           az account clear || true
-
 
   deploy-to-staging:
     needs: build-and-push-to-acr

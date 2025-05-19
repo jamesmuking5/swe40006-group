@@ -23,6 +23,7 @@ COPY frontend/ ./
 # Create .env.production with the correct API URL for production
 # Since the backend will serve the frontend, use a relative URL
 RUN echo "VITE_API_BASE_URL=" > .env.production
+RUN echo "VITE_APP_ENVIRONMENT=${APP_ENV}" >> .env.production
 
 # Build the frontend application
 RUN npm run build

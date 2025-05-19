@@ -4,6 +4,8 @@ import Cart from './Cart';
 import { CartProvider } from './CartContext';
 
 function App() {
+  const appEnv = import.meta.env.VITE_APP_ENVIRONMENT || 'unknown';
+
   return (
     <CartProvider>
       <div className="App">
@@ -22,6 +24,7 @@ function App() {
         </main>
         <footer>
           <p>&copy; {new Date().getFullYear()} Car Shop Demo - SWE40006 Group Project</p>
+          <p>This Web App is running on a <i>{appEnv}</i> server.</p>
         </footer>
       </div>
     </CartProvider>

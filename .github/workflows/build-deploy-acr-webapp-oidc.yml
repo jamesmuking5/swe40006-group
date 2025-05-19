@@ -80,7 +80,8 @@ jobs:
       
       # Debug - check build environment before passing to Docker build
       - name: Echo BUILD_ENV before Docker build
-        run: echo "BUILD_ENV is: ${{ env.BUILD_ENV }}
+        run: |
+          echo "BUILD_ENV is: ${{ env.BUILD_ENV }}
 
       - name: Build and push Docker image to ACR
         uses: docker/build-push-action@v5

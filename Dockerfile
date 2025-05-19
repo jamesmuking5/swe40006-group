@@ -1,3 +1,6 @@
+# Try to globally scope APP_ENV
+ARG APP_ENV
+
 # Use Node.js Alpine as the base image
 FROM node:23-alpine AS base
 LABEL maintainer="James Muking <102775371@students.swinburne.edu.my>"

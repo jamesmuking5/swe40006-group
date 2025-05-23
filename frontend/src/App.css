@@ -1,3 +1,7 @@
+* {
+  border: 1px solid red;
+}
+
 .App {
   text-align: center;
   display: flex;
@@ -67,6 +71,17 @@ footer {
   color: #555;
   font-size: 0.9rem;
   margin-top: 3rem;
+}
+
+.cart-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.cart-container {
+  position: sticky;
+  top: 50vh;
+  transition: top 0.3s ease;
 }
 
 /* Responsive adjustments */
